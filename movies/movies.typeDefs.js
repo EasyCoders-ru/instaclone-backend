@@ -1,7 +1,7 @@
 import { gql } from "apollo-server";
 import client from "../client";
 
-const typeDefs = gql`
+export const typeDefs = gql`
   type Movie {
     id: Int!
     title: String!
