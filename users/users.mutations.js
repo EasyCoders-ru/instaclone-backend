@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import client from "../client";
 
 export default {
@@ -6,7 +7,6 @@ export default {
       _,
       { firstName, lastName, username, email, password }
     ) => {
-      // проверить есть ли уже пользователи с таким username и email в БД
       const existingUser = await client.user.findFirst({
         where: {
           OR: [
@@ -20,7 +20,17 @@ export default {
         },
       });
       console.log(existingUser);
-      // захешировать пароль
+      const hashedPassword = await bcrypt.hash(password, 10);
+      return client.user.create({
+        data: {
+          firstName,
+          lastName,
+          username,
+          email,
+          password: hashedPassword,
+        },
+      });
+
       // сохранить запись в БД и вернуть объект пользователя
       // если есть ошибки - показать пользователю
     },
