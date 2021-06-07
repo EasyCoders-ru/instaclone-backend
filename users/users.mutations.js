@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import client from "../client";
 
 export default {
@@ -58,7 +59,11 @@ export default {
           error: "Неправильный пароль",
         };
       }
-      // Выпустить токен и отправить в ответ
+      const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
+      return {
+        ok: true,
+        token,
+      };
     },
   },
 };
