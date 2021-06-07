@@ -7,32 +7,37 @@ export default {
       _,
       { firstName, lastName, username, email, password }
     ) => {
-      const existingUser = await client.user.findFirst({
-        where: {
-          OR: [
-            {
-              username,
-            },
-            {
-              email,
-            },
-          ],
-        },
-      });
-      console.log(existingUser);
-      const hashedPassword = await bcrypt.hash(password, 10);
-      return client.user.create({
-        data: {
-          firstName,
-          lastName,
-          username,
-          email,
-          password: hashedPassword,
-        },
-      });
-
-      // сохранить запись в БД и вернуть объект пользователя
-      // если есть ошибки - показать пользователю
+      try {
+        const existingUser = await client.user.findFirst({
+          where: {
+            OR: [
+              {
+                username,
+              },
+              {
+                email,
+              },
+            ],
+          },
+        });
+        if (existingUser) {
+          throw new Error(
+            "Пользователь с указанным username / email уже существует"
+          );
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        return client.user.create({
+          data: {
+            firstName,
+            lastName,
+            username,
+            email,
+            password: hashedPassword,
+          },
+        });
+      } catch (error) {
+        return error;
+      }
     },
   },
 };
