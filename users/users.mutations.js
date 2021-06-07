@@ -39,5 +39,26 @@ export default {
         return error;
       }
     },
+    login: async (_, { username, password }) => {
+      const user = await client.user.findFirst({
+        where: {
+          username,
+        },
+      });
+      if (!user) {
+        return {
+          ok: false,
+          error: "Пользователь не найден",
+        };
+      }
+      const passwordOk = await bcrypt.compare(password, user.password);
+      if (!passwordOk) {
+        return {
+          ok: false,
+          error: "Неправильный пароль",
+        };
+      }
+      // Выпустить токен и отправить в ответ
+    },
   },
 };
