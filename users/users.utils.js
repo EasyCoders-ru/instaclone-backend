@@ -17,3 +17,12 @@ export const getUser = async (token) => {
     return null;
   }
 };
+
+export const protectResolvers = (user) => {
+  if (!user) {
+    return {
+      ok: false,
+      error: "Вам нужно войти в аккаунт",
+    };
+  }
+};
