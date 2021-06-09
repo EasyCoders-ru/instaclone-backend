@@ -18,11 +18,13 @@ export const getUser = async (token) => {
   }
 };
 
-export const protectResolvers = (user) => {
-  if (!user) {
-    return {
-      ok: false,
-      error: "Вам нужно войти в аккаунт",
-    };
-  }
-};
+export const protectedResolver =
+  (ourResolver) => (root, args, context, info) => {
+    if (!context.loggedInUser) {
+      return {
+        ok: false,
+        error: "Пожалуйста, войдите в аккаунт",
+      };
+    }
+    return ourResolver(root, args, context, info);
+  };
