@@ -1,5 +1,5 @@
 require("dotenv").config();
-import { ApolloServer } from "apollo-server";
+import { ApolloServer } from "apollo-server-express";
 import { typeDefs, resolvers } from "./schema";
 import { getUser, protectResolvers } from "./users/users.utils";
 
