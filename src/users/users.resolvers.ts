@@ -1,10 +1,10 @@
-import client from "../client";
+import { Resolvers } from "../types";
 
-export default {
+const resolvers: Resolvers = {
   User: {
-    totalFollowers: async ({ id }) =>
+    totalFollowers: async ({ id }, _, { client }) =>
       await client.user.count({ where: { following: { some: { id } } } }),
-    totalFollowing: async ({ id }) =>
+    totalFollowing: async ({ id }, _, { client }) =>
       await client.user.count({ where: { followers: { some: { id } } } }),
     isMe: ({ id }, _, { loggedInUser }) => {
       if (!loggedInUser) {
@@ -12,7 +12,7 @@ export default {
       }
       return id === loggedInUser.id;
     },
-    isFollowing: async ({ id }, _, { loggedInUser }) => {
+    isFollowing: async ({ id }, _, { loggedInUser, client }) => {
       if (!loggedInUser) {
         return false;
       }
@@ -30,3 +30,5 @@ export default {
     },
   },
 };
+
+export default resolvers;

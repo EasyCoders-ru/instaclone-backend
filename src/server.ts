@@ -3,7 +3,8 @@ import express from "express";
 import logger from "morgan";
 import { ApolloServer } from "apollo-server-express";
 import { typeDefs, resolvers } from "./schema";
-import { getUser, protectResolvers } from "./users/users.utils";
+import { getUser, protectedResolver } from "./users/users.utils";
+import client from "./client";
 
 const apollo = new ApolloServer({
   resolvers,
@@ -11,7 +12,8 @@ const apollo = new ApolloServer({
   context: async ({ req }) => {
     return {
       loggedInUser: await getUser(req.headers.token),
-      protectResolvers,
+      protectedResolver,
+      client,
     };
   },
 });
