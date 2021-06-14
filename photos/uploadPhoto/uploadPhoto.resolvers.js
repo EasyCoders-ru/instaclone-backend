@@ -1,14 +1,30 @@
+import client from "../../client";
 import { protectedResolver } from "../../users/users.utils";
 
 export default {
   Mutation: {
     uploadPhoto: protectedResolver((_, { file, caption }, { loggedInUser }) => {
       if (caption) {
-        // Парсинг хештегов
-        // Получить или создать хештег
+        const hashtags = caption.match(/#[а-яА-Я]+/g);
       }
-      // Сохранить фото с хештегами
-      // Привязать фото к хештегам
+      client.photo.create({
+        data: {
+          file,
+          caption,
+          hashtags: {
+            connectOrCreate: [
+              {
+                where: {
+                  hashtag: "#еду",
+                },
+                create: {
+                  hashtag: "#eду",
+                },
+              },
+            ],
+          },
+        },
+      });
     }),
   },
 };
