@@ -3,28 +3,33 @@ import { protectedResolver } from "../../users/users.utils";
 
 export default {
   Mutation: {
-    uploadPhoto: protectedResolver((_, { file, caption }, { loggedInUser }) => {
-      if (caption) {
-        const hashtags = caption.match(/#[а-яА-Я]+/g);
-      }
-      client.photo.create({
-        data: {
-          file,
-          caption,
-          hashtags: {
-            connectOrCreate: [
-              {
-                where: {
-                  hashtag: "#еду",
-                },
-                create: {
-                  hashtag: "#eду",
-                },
+    uploadPhoto: protectedResolver(
+      async (_, { file, caption }, { loggedInUser }) => {
+        let hashtagObj = [];
+        if (caption) {
+          const hashtags = caption.match(/#[а-яА-Я]+/g);
+          hashtagObj = hashtags.map((hashtag) => ({
+            where: { hashtag },
+            create: { hashtag },
+          }));
+        }
+        return client.photo.create({
+          data: {
+            file,
+            caption,
+            user: {
+              connect: {
+                id: loggedInUser.id,
               },
-            ],
+            },
+            ...(hashtagObj.length > 0 && {
+              hashtags: {
+                connectOrCreate: hashtagObj,
+              },
+            }),
           },
-        },
-      });
-    }),
+        });
+      }
+    ),
   },
 };
