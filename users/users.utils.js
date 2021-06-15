@@ -1,3 +1,4 @@
+import e from "express";
 import jwt from "jsonwebtoken";
 import client from "../client";
 
@@ -21,10 +22,15 @@ export const getUser = async (token) => {
 export function protectedResolver(ourResolver) {
   return function (root, args, context, info) {
     if (!context.loggedInUser) {
-      return {
-        ok: false,
-        error: "Пожалуйста, войдите в аккаунт",
-      };
+      const query = info.operation.operation === "query";
+      if (query) {
+        return null;
+      } else {
+        return {
+          ok: false,
+          error: "Пожалуйста, войдите в аккаунт",
+        };
+      }
     }
     return ourResolver(root, args, context, info);
   };
