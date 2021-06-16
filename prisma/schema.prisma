@@ -76,7 +76,7 @@ model Comment {
 
 model Dialog {
   id        Int       @id @default(autoincrement())
-  user      User[]
+  users     User[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   messages  Message[]
