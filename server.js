@@ -21,6 +21,7 @@ const PORT = process.env.PORT;
 const app = express();
 app.use(logger("tiny"));
 apollo.applyMiddleware({ app });
+apollo.installSubscriptionHandlers(app);
 app.use("/static", express.static("uploads"));
 
 app.listen({ port: PORT }, () => {
