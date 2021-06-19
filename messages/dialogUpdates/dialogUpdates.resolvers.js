@@ -7,8 +7,11 @@ export default {
   Subscription: {
     dialogUpdates: {
       subscribe: async (root, args, context, info) => {
-        const dialog = client.dialog.findUnique({
-          where: { id: args.id },
+        const dialog = await client.dialog.findFirst({
+          where: {
+            id: args.id,
+            users: { some: { id: context.loggedInUser.id } },
+          },
           select: { id: true },
         });
         if (!dialog) {
@@ -16,8 +19,20 @@ export default {
         }
         return withFilter(
           () => pubsub.asyncIterator(NEW_MESSAGE),
-          ({ dialogUpdates }, { id }) => {
-            return dialogUpdates.dialogId === id;
+          async ({ dialogUpdates }, { id }, { loggedInUser }) => {
+            if (dialogUpdates.dialogId === id) {
+              const dialog = await client.dialog.findFirst({
+                where: {
+                  id,
+                  users: { some: { id: loggedInUser.id } },
+                },
+                select: { id: true },
+              });
+              if (!dialog) {
+                return false;
+              }
+              return true;
+            }
           }
         )(root, args, context, info);
       },
