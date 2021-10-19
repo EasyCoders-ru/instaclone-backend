@@ -1,0 +1,27 @@
+{
+  "autorun": true,
+  "autokill": true,
+  "terminals": [
+    {
+      "name": "Backend",
+      "cwd": "~/instaclone-backend",
+      "command": "npm run dev"
+    },
+    {
+      "name": "Frontend",
+      "cwd": "~/instaclone-web",
+      "command": "npm run start",
+      "focus": true
+    },
+    {
+      "name": "Prisma",
+      "cwd": "~/instaclone-backend",
+      "command": "npm run studio"
+    },
+    {
+      "name": "Expo",
+      "cwd": "~/instaclone-native",
+      "command": "npm run start"
+    }
+  ]
+}
