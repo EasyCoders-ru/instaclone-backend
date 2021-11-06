@@ -9,6 +9,8 @@ import { getUser, protectedResolver } from "./users/users.utils";
 const apollo = new ApolloServer({
   resolvers,
   typeDefs,
+  playground: true,
+  introspection: true,
   context: async (ctx) => {
     if (ctx.req) {
       return {
