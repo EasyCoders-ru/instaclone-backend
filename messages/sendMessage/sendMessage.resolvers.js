@@ -60,9 +60,11 @@ export default {
             },
           },
         });
+        console.log(message);
         pubsub.publish(NEW_MESSAGE, { dialogUpdates: { ...message } });
         return {
           ok: true,
+          id: message.id,
         };
       }
     ),
